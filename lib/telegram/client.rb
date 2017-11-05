@@ -117,19 +117,20 @@ module Telegram
             end
           end
 
-          action = data.has_key?('action') ? case data['action']
-            when 'chat_add_user'
-              ActionType::CHAT_ADD_USER
-            when 'create_group_chat'
-              ActionType::CREATE_GROUP_CHAT
-             when 'add_contact'
-               ActionType::ADD_CONTACT
-            else
-              ActionType::UNKNOWN_ACTION
-            end : ActionType::NO_ACTION
+          # action = data.has_key?('action') ? case data['action']
+          #   when 'chat_add_user'
+          #     ActionType::CHAT_ADD_USER
+          #   when 'create_group_chat'
+          #     ActionType::CREATE_GROUP_CHAT
+          #    when 'add_contact'
+          #      ActionType::ADD_CONTACT
+          #   else
+          #     ActionType::UNKNOWN_ACTION
+          #   end : ActionType::NO_ACTION
 
-          event = Event.new(self, type, action, data)
-          @on[type].call(event) if @on.has_key?(type)
+          # event = Event.new(self, type, action, data)
+
+          @on[type].call(data) if @on.has_key?(type)
         rescue Exception => e
           logger.error("Error occurred during the processing: #{data}\n #{e.inspect} #{e.backtrace}")
         end

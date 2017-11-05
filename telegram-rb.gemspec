@@ -2,6 +2,7 @@ lib = File.join(File.dirname(__FILE__), 'lib')
 $:.unshift lib unless $:.include?(lib)
 
 require 'telegram/version'
+require 'date'
 
 Gem::Specification.new do |s|
   s.date        = Date.today.to_s

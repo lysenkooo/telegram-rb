@@ -82,6 +82,9 @@ module Telegram
     def execute
       cli_arguments = Telegram::CLIArguments.new(@config)
       command = "'#{@config.daemon}' #{cli_arguments.to_s}"
+
+      logger.info command
+
       @stdout = IO.popen(command, 'a+')
       initialize_stdout_reading
     end
@@ -108,14 +111,14 @@ module Telegram
     def process_data
       process = Proc.new { |data|
         begin
-          type = case data['event']
-          when 'message'
-            if data['from']['peer_id'] != @profile.id
-              EventType::RECEIVE_MESSAGE
-            else
-              EventType::SEND_MESSAGE
-            end
-          end
+          # type = case data['event']
+          # when 'message'
+          #   if data['from']['peer_id'] != @profile.id
+          #     EventType::RECEIVE_MESSAGE
+          #   else
+          #     EventType::SEND_MESSAGE
+          #   end
+          # end
 
           # action = data.has_key?('action') ? case data['action']
           #   when 'chat_add_user'
@@ -129,8 +132,9 @@ module Telegram
           #   end : ActionType::NO_ACTION
 
           # event = Event.new(self, type, action, data)
+          # @on[type].call(event) if @on.has_key?(type)
 
-          @on[type].call(data) if @on.has_key?(type)
+          @on['event'].call(data) if @on.has_key?('event')
         rescue Exception => e
           logger.error("Error occurred during the processing: #{data}\n #{e.inspect} #{e.backtrace}")
         end
